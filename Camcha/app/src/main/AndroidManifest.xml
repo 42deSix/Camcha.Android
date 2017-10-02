@@ -30,8 +30,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetectionActivity"
-            android:screenOrientation="portrait">
-            <!--android:configChanges="keyboardHidden|orientation">-->
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="landscape">
+
         </activity>
 
 
