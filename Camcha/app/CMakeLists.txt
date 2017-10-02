@@ -5,14 +5,15 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-set(pathOPENCV C:/Users/jinai/libraries/OpenCV-android-sdk)
-set(pathPROJECT C:/Users/jinai/Camcha.Android/Camcha)
+set(pathENV ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+set(pathOPENCV ${pathENV}/OpenCV-android-sdk)
+set(pathPROJECT ${pathENV}/Camcha)
 set(pathLIBOPENCV_JAVA ${pathPROJECT}/app/src/main/jniLibs/${ANDROID_ABI}/libopencv_java3.so)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 
-include_directories(${pathOPENCV}/sdk/native/jni/include)
+include_directories(${pathOPENCV}/sdk/native/jni/include) 
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.

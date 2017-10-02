@@ -219,6 +219,5 @@ fabric.properties
 */CMakeCache.txt
 */Makefile
 */cmake_install.cmake
-*/CMakeLists.txt
 
 # End of https://www.gitignore.io/api/c++,java,opencv,android,androidstudio
