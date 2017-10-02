@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Camcha</string>
+
+    <!-- MainActivity -->
+    <string name="detection_start">탐지</string>
+    <string name="show_map">지도</string>
 </resources>

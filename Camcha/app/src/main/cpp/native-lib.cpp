@@ -6,7 +6,7 @@ using namespace cv;
 
 extern "C" {
     JNIEXPORT void JNICALL
-    Java_com_softmilktea_camcha_MainActivity_ConvertRGBtoGray(
+    Java_com_softmilktea_camcha_DetectionActivity_ConvertRGBtoGray(
             JNIEnv *env, jobject /* this */,
             jlong matAddrInput, jlong matAddrResult) {
 
