@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- normal -->
+    <item android:state_focused="false" android:state_pressed="false">
+        <shape>
+            <corners android:radius="10dp" />
+            <solid android:color="#dad0ff" />
+            <!--<stroke android:width="5dp" android:color="#FF00FF00" />-->
+            <!--<gradient android:angle="45" android:centerColor="#FF00FF00"-->
+                <!--android:endColor="#FF0000FF" android:startColor="#FFFF0000"-->
+                <!--android:type="sweep" />-->
+        </shape>
+    </item>
+
+    <!-- on click -->
+    <item android:state_focused="false" android:state_pressed="true">
+        <shape>
+            <solid android:color="#cac0f0" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+
+</selector>
