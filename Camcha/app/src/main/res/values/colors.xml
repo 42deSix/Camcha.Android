@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <!-- pink tone : lovely -->
+    <!--<color name="colorPrimary">#ffcccc</color>-->
+    <!--<color name="colorPrimaryDark">#eeaaaa</color>-->
+    <!--<color name="colorAccent">#FF4081</color>-->
+
+    <!-- yellow tone : fresh -->
+    <color name="colorPrimary">#f3f3b0</color>
+    <color name="colorPrimaryDark">#eeee90</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!-- blue tone : trust -->
+    <!--<color name="colorPrimary">#eaeaff</color>-->
+    <!--<color name="colorPrimaryDark">#cacaff</color>-->
+    <!--<color name="colorAccent">#FF4081</color>-->
 </resources>

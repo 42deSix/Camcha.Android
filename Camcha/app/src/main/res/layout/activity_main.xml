@@ -24,16 +24,33 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="-27dp"
-        android:gravity="bottom"
+        tools:layout_editor_absoluteX="0dp"
         app:layout_constraintVertical_bias="1.0">
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="left">
+            <ImageButton
+                android:id="@+id/menu_button"
+                android:layout_width="30dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="7dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/menu_button"/>
+        </LinearLayout>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingBottom="30dp"
             android:orientation="vertical"
+            android:gravity="bottom"
             tools:layout_editor_absoluteY="0dp"
             tools:layout_editor_absoluteX="8dp">
             <android.support.v7.widget.AppCompatButton
