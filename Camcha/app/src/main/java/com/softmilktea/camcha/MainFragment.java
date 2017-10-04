@@ -33,13 +33,14 @@ public class MainFragment extends Fragment {
                     }
                 }
         );
-//        showMapButton.setOnClickListener(
-//                new AppCompatButton.OnClickListener() {
-//                    public void onClick(View v) {
-//                        startActivity(new Intent(MainActivity.this, showMapActivity.class));
-//                    }
-//                }
-//        );
+        showMapButton.setOnClickListener(
+                new AppCompatButton.OnClickListener() {
+                    public void onClick(View v) {
+                        Log.v(TAG, "Show me the map");
+//                        startActivity(new Intent(MainFragment.super.getContext(), ShowMapActivity.class));
+                    }
+                }
+        );
         return view;
     }
 }
