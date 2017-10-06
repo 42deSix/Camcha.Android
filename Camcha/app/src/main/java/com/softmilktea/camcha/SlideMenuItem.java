@@ -8,12 +8,12 @@ import android.graphics.drawable.Icon;
  * Created by SEJIN on 2017-10-03.
  */
 
-public class SlideMenuItems {
+public class SlideMenuItem {
     private Fragment targetFragment;
     private String name;
     private int icon;
 
-    public SlideMenuItems(Fragment targetFragment, String name, int icon) {
+    public SlideMenuItem(Fragment targetFragment, String name, int icon) {
         this.targetFragment = targetFragment;
         this.name = name;
         this.icon = icon;

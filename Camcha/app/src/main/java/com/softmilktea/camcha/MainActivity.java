@@ -6,15 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by SEJIN on 2017-10-03.
@@ -25,14 +19,14 @@ public class MainActivity extends AppCompatActivity {
     static final int NUM_ITEMS = 2;
     private ViewPager mPager;
     private SlidePagerAdapter mPagerAdapter;
+    private MenuItemsViewManager menuItemsManager;
 
-    private ActionBarDrawerToggle drawerToggle;
-    private List<SlideMenuItems> menuList = new ArrayList<>();
-//    private Fragment reportFragment = new ReportFragment();
-
+//    private ReportFragment reportFragment = new ReportFragment();
+    private MenuFragment menuFragment;
 
 
     public class SlidePagerAdapter extends FragmentPagerAdapter {
+        private Bundle savedInstanceState;
         public SlidePagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -44,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 			 * a container for other fragments
 			 */
             if (position == 0)
-                return new MenuFragment();
+                return menuFragment;
             else
                 return new MainFragment();
         }
@@ -62,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /* side menu */
+        menuFragment = new MenuFragment();
+        menuFragment.setSavedInstanceState(savedInstanceState);
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new SlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
@@ -70,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         final FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction();
 
-        ImageButton menuButton = (ImageButton) findViewById(R.id.menu_button);
+        ImageButton menuButton = (ImageButton) findViewById(R.id.menu_item_icon);
         menuButton.setOnClickListener(
                 new ImageButton.OnClickListener() {
                     public void onClick(View v) {
@@ -83,18 +79,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
         });
-//        createMenuList();
-
     }
-
-//    private void createMenuList() {
-//        SlideMenuItems menuItem0 = new SlideMenuItems(reportFragment, "신고", R.drawable.icon_report);
-//        menuList.add(menuItem0);
-////        SlideMenuItems menuItem1 = new SlideMenuItems(Fragment.CLOSE, R.drawable.icon_report);
-////        menuList.add(menuItem1);
-////        SlideMenuItems menuItem2 = new SlideMenuItems(Fragment.BUILDING, R.drawable.icon_setting);
-////        menuList.add(menuItem2);
-//
-//    }
 
 }
