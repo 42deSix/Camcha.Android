@@ -17,7 +17,7 @@ import android.widget.ImageButton;
 public class MainActivity extends AppCompatActivity {
     static final String TAG = "MainActivity";
     static final int NUM_ITEMS = 2;
-    private ViewPager mPager;
+    private LockableViewPager mPager;
     private SlidePagerAdapter mPagerAdapter;
     private MenuItemsViewManager menuItemsManager;
 
@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
         /* side menu */
         menuFragment = new MenuFragment();
         menuFragment.setSavedInstanceState(savedInstanceState);
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager = (LockableViewPager) findViewById(R.id.pager);
+        mPager.setSwipeable(false);
         mPagerAdapter = new SlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(1);
