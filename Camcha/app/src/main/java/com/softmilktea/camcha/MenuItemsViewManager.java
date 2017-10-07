@@ -3,15 +3,18 @@ package com.softmilktea.camcha;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
-import android.widget.ActionMenuView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
+
+import layout.ReportFragment;
+import layout.RootFragment;
 
 /**
  * Created by SEJIN on 2017-10-05.
@@ -28,23 +31,25 @@ public class MenuItemsViewManager {
         this.savedInstanceState = savedInstanceState;
     }
 
-    public View showMenuContent(List<SlideMenuItem> menuList) {
+    public View showMenuContent(final LockableViewPager mPager, final RootFragment rootFragment, List<SlideMenuItem> menuList) {
         int size = menuList.size();
 
         View menuView = menuFragment.getLayoutInflater(savedInstanceState).inflate(R.layout.fragment_menu, null);
         for (int i = 0; i < size; i++) {
-//            view.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//            setLocation(0, i*height);
-
-            createMenuItem(menuView, menuList.get(i));
-//            ((LinearLayout)menuView).addView(menuItemButton);
+            final SlideMenuItem logicalMenuItem = menuList.get(i);
+            LinearLayout menuItemLayout = createMenuItem(menuView, logicalMenuItem);
+            menuItemLayout.setOnClickListener(new LinearLayout.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    rootFragment.replaceRootView(logicalMenuItem.getTargetFragment());
+                    mPager.setCurrentItem(1);
+                }
+            });
         }
         return menuView;
     }
 
-    public void createMenuItem(View menuView, SlideMenuItem menuInfo) {
+    public LinearLayout createMenuItem(View menuView, SlideMenuItem menuInfo) {
         final float scale = menuView.getResources().getDisplayMetrics().density;
         View menuItemView = menuFragment.getLayoutInflater(savedInstanceState).inflate(R.layout.layout_menu_item, null);
 //        menuView.findViewById(R.id.menu_item_button);
@@ -70,8 +75,10 @@ public class MenuItemsViewManager {
         menuItem.addView(menuItemIcon);
         menuItem.addView(menuItemText);
         menuItem.setVisibility(View.VISIBLE);
-        menuItem.setEnabled(false);
+        menuItem.setEnabled(true);
         ((LinearLayout)menuView).addView(menuItem);
+
+        return menuItem;
     }
 
 

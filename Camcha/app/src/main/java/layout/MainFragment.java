@@ -1,4 +1,4 @@
-package com.softmilktea.camcha;
+package layout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+
+import com.softmilktea.camcha.DetectionActivity;
+import com.softmilktea.camcha.R;
 
 /**
  * Created by SEJIN on 2017-10-05.
@@ -17,12 +19,14 @@ import android.widget.ImageButton;
 
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
+    private FragmentTransaction transaction;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 		/* Inflate the layout for this fragment */
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+        transaction = getFragmentManager().beginTransaction();
 
         AppCompatButton detectionButton = (AppCompatButton) view.findViewById(R.id.detection_button);
         AppCompatButton showMapButton = (AppCompatButton) view.findViewById(R.id.show_map_button);
@@ -36,8 +40,14 @@ public class MainFragment extends Fragment {
         showMapButton.setOnClickListener(
                 new AppCompatButton.OnClickListener() {
                     public void onClick(View v) {
-                        Log.v(TAG, "Show me the map");
-//                        startActivity(new Intent(MainFragment.super.getContext(), ShowMapActivity.class));
+//                        Log.e(TAG, "Show me the map");
+////                        startActivity(new Intent(MainFragment.super.getContext(), ShowMapActivity.class));
+//                        if(transaction != null) {
+//                            transaction.replace(R.id.root_view, new ShowMapFragment());
+//                            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//                            transaction.addToBackStack(null);
+//                            transaction.commit();
+//                        }
                     }
                 }
         );
