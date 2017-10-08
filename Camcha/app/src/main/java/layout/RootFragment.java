@@ -2,6 +2,7 @@ package layout;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,10 +33,14 @@ public class RootFragment extends Fragment{
     }
 
     public void replaceRootView(Fragment newFragment) {
-        transaction = getFragmentManager().beginTransaction();
+        FragmentManager fm = getFragmentManager();
+        transaction = fm.beginTransaction();
         transaction.replace(R.id.root_view, newFragment);
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         transaction.addToBackStack(null);
+        if(fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack();
+        }
         transaction.commit();
     }
 }
