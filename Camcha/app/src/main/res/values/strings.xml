@@ -5,6 +5,14 @@
     <string name="detection_start">탐지</string>
     <string name="show_map">지도</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Detection -->
+    <string name="gps_plz">
+        보다 안전한 사회를 만들기 위해 Camcha는 사용자 위치정보를 포함한 탐지기록을 수집하고자 합니다.\n
+        탐지 전에 GPS 정보 수집에 동의해주세요."
+    </string>
+    <string name="gps_setting_on_plz">
+        "동의하시면 나타나는 설정 창에서 위치기능을 켜주시기 바랍니다."
+    </string>
+    <string name="agree">좋아요</string>
+    <string name="disagree">좆까요</string>
 </resources>

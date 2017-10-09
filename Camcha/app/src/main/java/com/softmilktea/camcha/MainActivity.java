@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 
+import layout.GpsPlzFragment;
 import layout.MenuFragment;
 import layout.RootFragment;
 
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 //    private ReportFragment reportFragment = new ReportFragment();
     private RootFragment rootFragment;
     private MenuFragment menuFragment;
+    private GpsPlzFragment gpsPleaseFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
