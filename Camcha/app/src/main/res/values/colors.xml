@@ -14,4 +14,7 @@
     <!--<color name="colorPrimary">#eaeaff</color>-->
     <!--<color name="colorPrimaryDark">#cacaff</color>-->
     <!--<color name="colorAccent">#FF4081</color>-->
+
+    <color name="dullGray">#333333</color>
+    <color name="brightGray">#fff5f5f5</color>
 </resources>

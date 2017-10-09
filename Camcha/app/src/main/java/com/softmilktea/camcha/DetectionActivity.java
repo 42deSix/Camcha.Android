@@ -11,7 +11,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -82,6 +84,36 @@ public class DetectionActivity extends AppCompatActivity
         mOpenCvCameraView.setCvCameraViewListener(this);
         mOpenCvCameraView.setCameraIndex(0); // front-camera(1),  back-camera(0)
         mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+
+        ImageButton backButton = (ImageButton)findViewById(R.id.detection_back_button);
+        ImageButton reportButton = (ImageButton)findViewById(R.id.detection_report_button);
+        ImageButton takeSnapshotButton = (ImageButton)findViewById(R.id.detection_take_snapshot_button);
+        ImageButton viewSnapshotButton = (ImageButton)findViewById(R.id.detection_view_snapshot_button);
+
+        backButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        reportButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        takeSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        viewSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
