@@ -3,6 +3,7 @@ package com.softmilktea.camcha;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,6 +33,7 @@ public class DetectionActivity extends AppCompatActivity
     private CameraBridgeViewBase mOpenCvCameraView;
     private Mat matInput;
     private Mat matResult;
+    private Camera camera;
 
     public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
 
@@ -105,7 +107,7 @@ public class DetectionActivity extends AppCompatActivity
         takeSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+//                camera.
             }
         });
         viewSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {

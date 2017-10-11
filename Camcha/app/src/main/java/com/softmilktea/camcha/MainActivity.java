@@ -60,6 +60,19 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    /* If you press the back butteon when the menu is turned on,
+     * this code would make you turn back to main screen.
+     */
+    @Override
+    public void onBackPressed() {
+        if(mPager.getCurrentItem() == 0) {
+            mPager.setCurrentItem(1);
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
     public class SlidePagerAdapter extends FragmentPagerAdapter {
         public SlidePagerAdapter(FragmentManager fm) {
             super(fm);
