@@ -2,10 +2,13 @@ package com.softmilktea.camcha;
 
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -22,6 +25,9 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 
+import java.io.File;
+import java.util.Date;
+
 /**
  * Created by SEJIN on 2017-10-03.
  */
@@ -33,7 +39,6 @@ public class DetectionActivity extends AppCompatActivity
     private CameraBridgeViewBase mOpenCvCameraView;
     private Mat matInput;
     private Mat matResult;
-    private Camera camera;
 
     public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
 
@@ -71,15 +76,15 @@ public class DetectionActivity extends AppCompatActivity
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_detection);
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            //퍼미션 상태 확인
-            if (!hasPermissions(PERMISSIONS)) {
-
-                //퍼미션 허가 안되어있다면 사용자에게 요청
-                requestPermissions(PERMISSIONS, PERMISSIONS_REQUEST_CODE);
-            }
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            //퍼미션 상태 확인
+//            if (!hasPermissions(PERMISSIONS[PERMISSIONS_REQUEST_CAMERA])) {
+//
+//                //퍼미션 허가 안되어있다면 사용자에게 요청
+////                requestPermissions(PERMISSIONS[PERMISSIONS_REQUEST_CAMERA], PERMISSIONS_REQUEST_CAMERA);
+//                showDialogForPermission("뀨", PERMISSIONS_REQUEST_CAMERA);
+//            }
+//        }
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
@@ -107,7 +112,6 @@ public class DetectionActivity extends AppCompatActivity
         takeSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                camera.
             }
         });
         viewSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
@@ -170,24 +174,21 @@ public class DetectionActivity extends AppCompatActivity
 
 
     //여기서부턴 퍼미션 관련 메소드
-    static final int PERMISSIONS_REQUEST_CODE = 1000;
-    String[] PERMISSIONS = {"android.permission.CAMERA"};
+    private final int PERMISSIONS_REQUEST_CAMERA = 1;
+    private final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
+    String[][] PERMISSIONS = {{"android.permission.CAMERA"}, {"android.permission.WRITE_EXTERNAL_STORAGE"}};
 
 
     private boolean hasPermissions(String[] permissions) {
         int result;
-
         //스트링 배열에 있는 퍼미션들의 허가 상태 여부 확인
         for (String perms : permissions) {
-
             result = ContextCompat.checkSelfPermission(this, perms);
-
             if (result == PackageManager.PERMISSION_DENIED) {
                 //허가 안된 퍼미션 발견
                 return false;
             }
         }
-
         //모든 퍼미션이 허가되었음
         return true;
     }
@@ -200,21 +201,30 @@ public class DetectionActivity extends AppCompatActivity
 
         switch (requestCode) {
 
-            case PERMISSIONS_REQUEST_CODE:
+            case PERMISSIONS_REQUEST_CAMERA:
                 if (grantResults.length > 0) {
                     boolean cameraPermissionAccepted = grantResults[0]
                             == PackageManager.PERMISSION_GRANTED;
 
                     if (!cameraPermissionAccepted)
-                        showDialogForPermission("앱을 실행하려면 퍼미션을 허가하셔야합니다.");
+                        showDialogForPermission("앱을 실행하려면 퍼미션을 허가하셔야합니다.", PERMISSIONS_REQUEST_CAMERA);
                 }
                 break;
+
+            case PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:
+                if (grantResults.length > 0) {
+                    boolean writeExternalStoragePermissionAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                    if(!writeExternalStoragePermissionAccepted) {
+                        showDialogForPermission("뀨뀨", PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                    }
+                }
         }
     }
 
 
     @TargetApi(Build.VERSION_CODES.M)
-    private void showDialogForPermission(String msg) {
+    private void showDialogForPermission(String msg, final int permissionCode) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(DetectionActivity.this);
         builder.setTitle("알림");
@@ -222,7 +232,7 @@ public class DetectionActivity extends AppCompatActivity
         builder.setCancelable(false);
         builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                requestPermissions(PERMISSIONS, PERMISSIONS_REQUEST_CODE);
+                requestPermissions(PERMISSIONS[permissionCode], permissionCode);
             }
         });
         builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {

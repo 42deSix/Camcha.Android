@@ -41,8 +41,7 @@ public class GpsPlzFragment extends Fragment {
 
         mContext = GpsPlzFragment.super.getContext();
         LocationManager locationManager = (LocationManager) mContext.getSystemService(getContext().LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER)) {
-            Log.e(TAG, "fuck");
+        if (locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER) && ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             startActivity(new Intent(GpsPlzFragment.super.getContext(), DetectionActivity.class));
             backToMainFragment(transaction);
         }

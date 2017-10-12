@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 //    private ReportFragment reportFragment = new ReportFragment();
     private RootFragment rootFragment;
     private MenuFragment menuFragment;
-    private GpsPlzFragment gpsPleaseFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
