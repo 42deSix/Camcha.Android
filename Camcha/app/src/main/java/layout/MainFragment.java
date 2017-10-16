@@ -77,7 +77,7 @@ public class MainFragment extends Fragment {
     private boolean hasPermissions(String[] permissions) {
         int result;
         //스트링 배열에 있는 퍼미션들의 허가 상태 여부 확인
-        for (String perms : permissions) {
+        for (final String perms : permissions) {
             result = ContextCompat.checkSelfPermission(getActivity(), perms);
             if (result == PackageManager.PERMISSION_DENIED) {
                 //허가 안된 퍼미션 발견
@@ -99,7 +99,7 @@ public class MainFragment extends Fragment {
                     boolean cameraPermissionAccepted = (grantResults[0] == PackageManager.PERMISSION_GRANTED);
 
                     if (!cameraPermissionAccepted) {
-                        showDialogForPermission("탐지를 위해서는 카메라에 대한 접근권한이 필요합니다.\n설정 > 애플리케이션 관리자 > Camcha에 들어가서 카메라 권한을 켜주세요.");
+                        showDialogForPermission("탐지를 위해서는 카메라에 대한 접근권한이 필요합니다.\n설정 > 애플리케이션 관리자 > Camcha > 앱 권한에 들어가서 카메라 권한을 켜주세요.");
                     }
                 }
                 break;

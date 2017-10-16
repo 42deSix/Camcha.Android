@@ -2,10 +2,8 @@ package com.softmilktea.camcha;
 
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,15 +16,25 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
+import org.opencv.core.CvException;
 import org.opencv.core.Mat;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by SEJIN on 2017-10-03.
@@ -37,8 +45,8 @@ public class DetectionActivity extends AppCompatActivity
 
     private static final String TAG = "opencv";
     private CameraBridgeViewBase mOpenCvCameraView;
-    private Mat matInput;
-    private Mat matResult;
+    private Mat mMatInput;
+    private Mat mMatResult;
 
     public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
 
@@ -76,50 +84,12 @@ public class DetectionActivity extends AppCompatActivity
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_detection);
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            //퍼미션 상태 확인
-//            if (!hasPermissions(PERMISSIONS[PERMISSIONS_REQUEST_CAMERA])) {
-//
-//                //퍼미션 허가 안되어있다면 사용자에게 요청
-////                requestPermissions(PERMISSIONS[PERMISSIONS_REQUEST_CAMERA], PERMISSIONS_REQUEST_CAMERA);
-//                showDialogForPermission("뀨", PERMISSIONS_REQUEST_CAMERA);
-//            }
-//        }
-
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
         mOpenCvCameraView.setCameraIndex(0); // front-camera(1),  back-camera(0)
         mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
 
-        ImageButton backButton = (ImageButton)findViewById(R.id.detection_back_button);
-        ImageButton reportButton = (ImageButton)findViewById(R.id.detection_report_button);
-        ImageButton takeSnapshotButton = (ImageButton)findViewById(R.id.detection_take_snapshot_button);
-        ImageButton viewSnapshotButton = (ImageButton)findViewById(R.id.detection_view_snapshot_button);
-
-        backButton.setOnClickListener(new ImageButton.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        reportButton.setOnClickListener(new ImageButton.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        takeSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-        viewSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     @Override
@@ -162,21 +132,94 @@ public class DetectionActivity extends AppCompatActivity
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
 
-        matInput = inputFrame.rgba();
+        mMatInput = inputFrame.rgba();
 
-        if (matResult != null) matResult.release();
-        matResult = new Mat(matInput.rows(), matInput.cols(), matInput.type());
+        if (mMatResult != null) mMatResult.release();
+        mMatResult = new Mat(mMatInput.rows(), mMatInput.cols(), mMatInput.type());
 
-        ConvertRGBtoGray(matInput.getNativeObjAddr(), matResult.getNativeObjAddr());
+        ConvertRGBtoGray(mMatInput.getNativeObjAddr(), mMatResult.getNativeObjAddr());
 
-        return matResult;
+
+        ImageButton backButton = (ImageButton)findViewById(R.id.detection_back_button);
+        ImageButton reportButton = (ImageButton)findViewById(R.id.detection_report_button);
+        ImageButton takeSnapshotButton = (ImageButton)findViewById(R.id.detection_take_snapshot_button);
+        ImageButton viewSnapshotButton = (ImageButton)findViewById(R.id.detection_view_snapshot_button);
+
+        backButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        reportButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        takeSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (!hasPermissions(PERMISSIONS)) {
+                        requestPermissions(PERMISSIONS, PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                    }
+                    else {
+                        saveSnapshot();
+                    }
+                }
+            }
+        });
+        viewSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        return mMatResult;
+    }
+
+
+    public void saveSnapshot() {
+        String camchaRootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Camcha";
+        File camchaDir = new File(camchaRootPath);
+        if(!camchaDir.exists()) {
+            camchaDir.mkdirs();
+        }
+
+        Bitmap captureView = Bitmap.createBitmap(mMatResult.width(), mMatResult.height(), Bitmap.Config.ARGB_8888); // 왜 되는지 모름. rows(), cols() 쓰면 안 됨. 값이 정확히 맞아야 되나...
+        try {
+            Utils.matToBitmap(mMatResult, captureView);
+        }
+        catch(CvException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        Date currentLocalTime = cal.getTime();
+        DateFormat date = new SimpleDateFormat("yyMMddHHmmssS");
+        date.setTimeZone(TimeZone.getTimeZone("GMT+9"));
+        String fileName = date.format(currentLocalTime) + ".png";
+
+        try {
+            File imageToSave = new File(camchaDir, fileName);
+            FileOutputStream out = new FileOutputStream(imageToSave);
+            if(!captureView.compress(Bitmap.CompressFormat.PNG, 0, out)) {
+            }
+            out.close();
+            Toast.makeText(getApplicationContext(), "스냅샷이 저장되었습니다.", Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, e.getMessage());
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
 
     //여기서부턴 퍼미션 관련 메소드
-    private final int PERMISSIONS_REQUEST_CAMERA = 1;
-    private final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
-    String[][] PERMISSIONS = {{"android.permission.CAMERA"}, {"android.permission.WRITE_EXTERNAL_STORAGE"}};
+    private final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    String[] PERMISSIONS = {"android.permission.WRITE_EXTERNAL_STORAGE"};
 
 
     private boolean hasPermissions(String[] permissions) {
@@ -201,22 +244,15 @@ public class DetectionActivity extends AppCompatActivity
 
         switch (requestCode) {
 
-            case PERMISSIONS_REQUEST_CAMERA:
-                if (grantResults.length > 0) {
-                    boolean cameraPermissionAccepted = grantResults[0]
-                            == PackageManager.PERMISSION_GRANTED;
-
-                    if (!cameraPermissionAccepted)
-                        showDialogForPermission("앱을 실행하려면 퍼미션을 허가하셔야합니다.", PERMISSIONS_REQUEST_CAMERA);
-                }
-                break;
-
             case PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:
                 if (grantResults.length > 0) {
-                    boolean writeExternalStoragePermissionAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeExternalStoragePermissionAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
 
                     if(!writeExternalStoragePermissionAccepted) {
-                        showDialogForPermission("뀨뀨", PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                        showDialogForPermission("스냅샷을 저장하기 위해서는 저장공간에 대한 접근권한이 필요합니다.\n설정 > 애플리케이션 관리자 > Camcha > 앱 권한에 들어가서 저장공간 권한을 켜주세요.");
+                    }
+                    else {
+                        saveSnapshot();
                     }
                 }
         }
@@ -224,24 +260,17 @@ public class DetectionActivity extends AppCompatActivity
 
 
     @TargetApi(Build.VERSION_CODES.M)
-    private void showDialogForPermission(String msg, final int permissionCode) {
+    private void showDialogForPermission(String msg) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(DetectionActivity.this);
         builder.setTitle("알림");
         builder.setMessage(msg);
         builder.setCancelable(false);
-        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                requestPermissions(PERMISSIONS[permissionCode], permissionCode);
-            }
-        });
-        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                finish();
             }
         });
         builder.create().show();
     }
-
 
 }

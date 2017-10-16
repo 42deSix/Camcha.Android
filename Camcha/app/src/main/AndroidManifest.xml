@@ -16,6 +16,7 @@
         android:largeScreens="true"
         android:anyDensity="true" />
 
+    <!--android:name=".BaseApplication"-->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -36,8 +37,5 @@
             android:screenOrientation="landscape">
 
         </activity>
-
-
-    </application>
-
+</application>
 </manifest>
