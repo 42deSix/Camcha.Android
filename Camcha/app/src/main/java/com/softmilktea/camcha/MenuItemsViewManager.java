@@ -60,7 +60,6 @@ public class MenuItemsViewManager {
      * @return LinearLayout menuItem
      */
     public LinearLayout createMenuItem(View menuView, SlideMenuItem menuInfo) {
-        final float scale = menuView.getResources().getDisplayMetrics().density;
         View menuItemView = mMenuFragment.getLayoutInflater(mSavedInstanceState).inflate(R.layout.layout_menu_item, null);
 //        menuView.findViewById(R.id.menu_item_button);
         View menuItemIconView = menuItemView.findViewById(R.id.menu_item_icon);
@@ -68,7 +67,7 @@ public class MenuItemsViewManager {
 
         ImageView menuItemIcon = new ImageView(menuItemIconView.getContext());
         menuItemIcon.setImageResource(menuInfo.getIcon());
-        LinearLayout.LayoutParams iconLayoutParams  = new LinearLayout.LayoutParams((int)(mHeight*scale), (int)(mHeight*scale));
+        LinearLayout.LayoutParams iconLayoutParams  = new LinearLayout.LayoutParams((int)(mHeight*BaseApplication.SCALE), (int)(mHeight*BaseApplication.SCALE));
         menuItemIcon.setLayoutParams(iconLayoutParams);
 
         menuItemIcon.setVisibility(View.VISIBLE);
@@ -77,7 +76,7 @@ public class MenuItemsViewManager {
         TextView menuItemText = new TextView(menuItemTextView.getContext());
         menuItemText.setText(menuInfo.getName());
         menuItemText.setTextColor(Color.parseColor("#000000"));
-        menuItemText.setPadding((int)(20*scale), 0, 0, 0);
+        menuItemText.setPadding((int)(20*BaseApplication.SCALE), 0, 0, 0);
         menuItemText.setVisibility(View.VISIBLE);
         menuItemText.setEnabled(false);
 

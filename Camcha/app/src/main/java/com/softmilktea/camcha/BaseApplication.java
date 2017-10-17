@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -20,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 public class BaseApplication extends Application {
     public static boolean DEBUG;
     public static FragmentTransaction ROOT_FRAGMENT_TRANSACTION;
+    public static final float SCALE = Resources.getSystem().getDisplayMetrics().density;
     public static final int NUM_ITEMS = 2;
     public static final int PERMISSIONS_REQUEST_CAMERA = 1;
     public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
