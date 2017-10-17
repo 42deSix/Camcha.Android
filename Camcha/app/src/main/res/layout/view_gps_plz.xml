@@ -35,14 +35,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:gravity="center">
-            <android.support.v7.widget.AppCompatButton
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_circular_green"
                 android:text="@string/agree"
                 android:layout_marginRight="10dp"
                 android:id="@+id/gps_plz_agree_button"/>
-            <android.support.v7.widget.AppCompatButton
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_circular_red"

@@ -16,14 +16,12 @@ import layout.RootFragment;
  */
 
 public class MainActivity extends AppCompatActivity {
-    static final String TAG = "MainActivity";
-    static final int NUM_ITEMS = 2;
     private LockableViewPager mPager;
     private SlidePagerAdapter mPagerAdapter;
 
-//    private ReportFragment reportFragment = new ReportFragment();
-    private RootFragment rootFragment;
-    private MenuFragment menuFragment;
+//    private ReportFragment mReportFragment = new ReportFragment();
+    private RootFragment mRootFragment;
+    private MenuFragment mMenuFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +30,16 @@ public class MainActivity extends AppCompatActivity {
 
         /* side menu */
         mPager = (LockableViewPager) findViewById(R.id.pager);
-        mPager.setSwipeable(false);
+        mPager.setmSwipeable(false);
         mPagerAdapter = new SlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(1);
 
-        rootFragment = new RootFragment();
-        menuFragment = new MenuFragment();
-        menuFragment.setMPager(mPager);
-        menuFragment.setRootFragment(rootFragment);
-        menuFragment.setSavedInstanceState(savedInstanceState);
+        mRootFragment = new RootFragment();
+        mMenuFragment = new MenuFragment();
+        mMenuFragment.setMPager(mPager);
+        mMenuFragment.setmRootFragment(mRootFragment);
+        mMenuFragment.setSavedInstanceState(savedInstanceState);
 
         ImageButton menuButton = (ImageButton) findViewById(R.id.menu_item_icon);
         menuButton.setOnClickListener(
@@ -83,14 +81,14 @@ public class MainActivity extends AppCompatActivity {
 			 * a container for other fragments
 			 */
             if (position == 0)
-                return menuFragment;
+                return mMenuFragment;
             else
-                return rootFragment;
+                return mRootFragment;
         }
 
         @Override
         public int getCount() {
-            return NUM_ITEMS;
+            return BaseApplication.NUM_ITEMS;
         }
     }
 }

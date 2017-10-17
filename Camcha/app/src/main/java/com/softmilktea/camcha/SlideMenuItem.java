@@ -10,26 +10,26 @@ import android.graphics.drawable.Icon;
 
 public class SlideMenuItem {
     private Fragment targetFragment;
-    private String name;
-    private int icon;
+    private String mIconName;
+    private int mIcon;
 
     public SlideMenuItem(Fragment targetFragment, String name, int icon) {
         this.targetFragment = targetFragment;
-        this.name = name;
-        this.icon = icon;
+        this.mIconName = name;
+        this.mIcon = icon;
     }
 
     public String getName() {
-        return name;
+        return mIconName;
     }
     public void setName(String name) {
-        this.name = name;
+        this.mIconName = name;
     }
     public int getIcon() {
-        return icon;
+        return mIcon;
     }
     public void setIcon(int icon) {
-        this.icon = icon;
+        this.mIcon = icon;
     }
     public Fragment getTargetFragment() {
         return targetFragment;

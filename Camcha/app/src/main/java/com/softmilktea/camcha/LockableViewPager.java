@@ -10,20 +10,25 @@ import android.view.MotionEvent;
  */
 
 public class LockableViewPager extends ViewPager {
-    private boolean swipeable;
+    private boolean mSwipeable;
 
     public LockableViewPager(Context context) {
         super(context);
     }
 
+    /**
+     * Constructor. Make this viewPager swipeable.
+     * @param context
+     * @param attrs
+     */
     public LockableViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.swipeable = true;
+        this.mSwipeable = true;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (this.swipeable) {
+        if (this.mSwipeable) {
             return super.onTouchEvent(event);
         }
         return false;
@@ -31,13 +36,13 @@ public class LockableViewPager extends ViewPager {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        if (this.swipeable) {
+        if (this.mSwipeable) {
             return super.onInterceptTouchEvent(event);
         }
         return false;
     }
 
-    public void setSwipeable(boolean swipeable) {
-        this.swipeable = swipeable;
+    public void setmSwipeable(boolean mSwipeable) {
+        this.mSwipeable = mSwipeable;
     }
 }

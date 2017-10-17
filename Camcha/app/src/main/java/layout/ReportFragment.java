@@ -13,7 +13,6 @@ import com.softmilktea.camcha.R;
  */
 
 public class ReportFragment extends Fragment {
-    private static final String TAG = "RootFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

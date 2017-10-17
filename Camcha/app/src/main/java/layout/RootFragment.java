@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.softmilktea.camcha.BaseApplication;
 import com.softmilktea.camcha.R;
 
 /**
@@ -16,8 +17,6 @@ import com.softmilktea.camcha.R;
  */
 
 public class RootFragment extends Fragment{
-    private static final String TAG = "RootFragment";
-    private static FragmentTransaction transaction;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -25,22 +24,27 @@ public class RootFragment extends Fragment{
 		/* Inflate the layout for this fragment */
         View view = inflater.inflate(R.layout.fragment_root, container, false);
 
-        transaction = getFragmentManager().beginTransaction();
-        transaction.add(R.id.root_view, new MainFragment());
-        transaction.commit();
+        BaseApplication.ROOT_FRAGMENT_TRANSACTION = getFragmentManager().beginTransaction();
+        BaseApplication.ROOT_FRAGMENT_TRANSACTION.add(R.id.root_view, new MainFragment());
+        BaseApplication.ROOT_FRAGMENT_TRANSACTION.commit();
 
         return view;
     }
 
+    /**
+     * Replaces 'root_view' of main page in RootFragment with other views
+     * @author Sejin Jeon
+     * @param newFragment
+     */
     public void replaceRootView(Fragment newFragment) {
         FragmentManager fm = getFragmentManager();
-        transaction = fm.beginTransaction();
-        transaction.replace(R.id.root_view, newFragment);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        transaction.addToBackStack(null);
+        BaseApplication.ROOT_FRAGMENT_TRANSACTION = fm.beginTransaction();
+        BaseApplication.ROOT_FRAGMENT_TRANSACTION.replace(R.id.root_view, newFragment);
+        BaseApplication.ROOT_FRAGMENT_TRANSACTION.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        BaseApplication.ROOT_FRAGMENT_TRANSACTION.addToBackStack(null);
         if(fm.getBackStackEntryCount() > 0) {
             fm.popBackStack();
         }
-        transaction.commit();
+        BaseApplication.ROOT_FRAGMENT_TRANSACTION.commit();
     }
 }

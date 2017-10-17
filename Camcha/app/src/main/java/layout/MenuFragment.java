@@ -2,7 +2,6 @@ package layout;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,40 +22,42 @@ import java.util.List;
  * 
  */
 public class MenuFragment extends Fragment {
-	private static final String TAG = "MenuFragment";
 
-	private List<SlideMenuItem> menuList;
-	private MenuItemsViewManager menuItemManager;
+	private List<SlideMenuItem> mMenuList;
+	private MenuItemsViewManager mMenuItemManager;
     private LockableViewPager mPager;
-    private RootFragment rootFragment;
-    private List<View> menuItemViewList = new ArrayList<>();
+    private RootFragment mRootFragment;
 
 	public MenuFragment(){}
     public void setMPager(LockableViewPager mPager) {
         this.mPager = mPager;
     }
-    public void setRootFragment(RootFragment rootFragment) {
-        this.rootFragment = rootFragment;
+    public void setmRootFragment(RootFragment mRootFragment) {
+        this.mRootFragment = mRootFragment;
     }
 	public void setSavedInstanceState(Bundle savedInstanceState) {
-		this.menuItemManager = new MenuItemsViewManager(MenuFragment.this, savedInstanceState);
+		this.mMenuItemManager = new MenuItemsViewManager(MenuFragment.this, savedInstanceState);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		createMenuList();
-		return menuItemManager.showMenuContent(mPager, rootFragment, menuList);
+		return mMenuItemManager.showMenuContent(mPager, mRootFragment, mMenuList);
 	}
 
+	/**
+	 * Create menu items
+	 * @author Sejin Jeon
+	 */
 	private void createMenuList() {
-		menuList = new ArrayList();
+		mMenuList = new ArrayList();
 		SlideMenuItem menuItem0 = new SlideMenuItem(new ReportFragment(), "신고", R.drawable.icon_report);
-		menuList.add(menuItem0);
+		mMenuList.add(menuItem0);
         SlideMenuItem menuItem1 = new SlideMenuItem(new SettingFragment(), "설정", R.drawable.icon_setting);
-        menuList.add(menuItem1);
+        mMenuList.add(menuItem1);
 //        SlideMenuItem menuItem2 = new SlideMenuItem(Fragment.BUILDING, R.drawable.icon_setting);
-//        menuList.add(menuItem2);
+//        mMenuList.add(menuItem2);
 
 	}
 }

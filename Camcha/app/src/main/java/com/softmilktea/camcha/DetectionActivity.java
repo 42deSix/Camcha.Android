@@ -1,17 +1,12 @@
 package com.softmilktea.camcha;
 
-import android.annotation.TargetApi;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
@@ -43,10 +38,13 @@ import java.util.TimeZone;
 public class DetectionActivity extends AppCompatActivity
         implements CameraBridgeViewBase.CvCameraViewListener2 {
 
-    private static final String TAG = "opencv";
     private CameraBridgeViewBase mOpenCvCameraView;
     private Mat mMatInput;
     private Mat mMatResult;
+    private String mCamchaRootPath;
+    private String mFileName;
+
+    private String[] mPermissions = {"android.permission.WRITE_EXTERNAL_STORAGE"};
 
     public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
 
@@ -90,6 +88,12 @@ public class DetectionActivity extends AppCompatActivity
         mOpenCvCameraView.setCameraIndex(0); // front-camera(1),  back-camera(0)
         mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
 
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        Date currentLocalTime = cal.getTime();
+        DateFormat date = new SimpleDateFormat("yyMMddHHmmssS");
+        date.setTimeZone(TimeZone.getTimeZone("GMT+9"));
+        mCamchaRootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Camcha";
+        mFileName = date.format(currentLocalTime) + ".png";
     }
 
     @Override
@@ -104,10 +108,10 @@ public class DetectionActivity extends AppCompatActivity
         super.onResume();
 
         if (!OpenCVLoader.initDebug()) {
-            Log.d(TAG, "onResume :: Internal OpenCV library not found.");
+            Dlog.d("onResume :: Internal OpenCV library not found.");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_2_0, this, mLoaderCallback);
         } else {
-            Log.d(TAG, "onResum :: OpenCV library found inside package. Using it!");
+            Dlog.d("onResum :: OpenCV library found inside package. Using it!");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
     }
@@ -161,11 +165,11 @@ public class DetectionActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (!hasPermissions(PERMISSIONS)) {
-                        requestPermissions(PERMISSIONS, PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                    if (!BaseApplication.hasPermissions(DetectionActivity.this, mPermissions)) {
+                        requestPermissions(mPermissions, BaseApplication.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
                     }
                     else {
-                        saveSnapshot();
+                        saveSnapshot(mMatResult, mCamchaRootPath, mFileName);
                     }
                 }
             }
@@ -180,61 +184,34 @@ public class DetectionActivity extends AppCompatActivity
         return mMatResult;
     }
 
-
-    public void saveSnapshot() {
-        String camchaRootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Camcha";
-        File camchaDir = new File(camchaRootPath);
+    /**
+     * @author Sejin Jeon
+     * It saves a snapshot of mMatResult as a png file in the Android file system.
+     */
+    public void saveSnapshot(Mat mat, String rootPath, String fileName) {
+        File camchaDir = new File(rootPath);
         if(!camchaDir.exists()) {
             camchaDir.mkdirs();
         }
 
-        Bitmap captureView = Bitmap.createBitmap(mMatResult.width(), mMatResult.height(), Bitmap.Config.ARGB_8888); // 왜 되는지 모름. rows(), cols() 쓰면 안 됨. 값이 정확히 맞아야 되나...
+        Bitmap captureView = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888); // 왜 되는지 모름. rows(), cols() 쓰면 안 됨. 값이 정확히 맞아야 되나...
         try {
-            Utils.matToBitmap(mMatResult, captureView);
-        }
-        catch(CvException e) {
-            Log.e(TAG, e.getMessage());
-        }
-
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-        Date currentLocalTime = cal.getTime();
-        DateFormat date = new SimpleDateFormat("yyMMddHHmmssS");
-        date.setTimeZone(TimeZone.getTimeZone("GMT+9"));
-        String fileName = date.format(currentLocalTime) + ".png";
-
-        try {
+            Utils.matToBitmap(mat, captureView);
             File imageToSave = new File(camchaDir, fileName);
             FileOutputStream out = new FileOutputStream(imageToSave);
             if(!captureView.compress(Bitmap.CompressFormat.PNG, 0, out)) {
             }
             out.close();
             Toast.makeText(getApplicationContext(), "스냅샷이 저장되었습니다.", Toast.LENGTH_SHORT).show();
+        } catch (CvException e) {
+            Dlog.e(e.getMessage());
         } catch (FileNotFoundException e) {
-            Log.e(TAG, e.getMessage());
+            Dlog.e(e.getMessage());
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+            Dlog.e(e.getMessage());
         }
     }
 
-
-    //여기서부턴 퍼미션 관련 메소드
-    private final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
-    String[] PERMISSIONS = {"android.permission.WRITE_EXTERNAL_STORAGE"};
-
-
-    private boolean hasPermissions(String[] permissions) {
-        int result;
-        //스트링 배열에 있는 퍼미션들의 허가 상태 여부 확인
-        for (String perms : permissions) {
-            result = ContextCompat.checkSelfPermission(this, perms);
-            if (result == PackageManager.PERMISSION_DENIED) {
-                //허가 안된 퍼미션 발견
-                return false;
-            }
-        }
-        //모든 퍼미션이 허가되었음
-        return true;
-    }
 
 
     @Override
@@ -244,33 +221,18 @@ public class DetectionActivity extends AppCompatActivity
 
         switch (requestCode) {
 
-            case PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:
+            case BaseApplication.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:
                 if (grantResults.length > 0) {
                     boolean writeExternalStoragePermissionAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
 
                     if(!writeExternalStoragePermissionAccepted) {
-                        showDialogForPermission("스냅샷을 저장하기 위해서는 저장공간에 대한 접근권한이 필요합니다.\n설정 > 애플리케이션 관리자 > Camcha > 앱 권한에 들어가서 저장공간 권한을 켜주세요.");
+                        BaseApplication.showDialogForPermission(DetectionActivity.this, getSupportFragmentManager(), "스냅샷을 저장하기 위해서는 저장공간에 대한 접근권한이 필요합니다.\n설정 > 애플리케이션 관리자 > Camcha > 앱 권한에 들어가서 저장공간 권한을 켜주세요.");
                     }
                     else {
-                        saveSnapshot();
+                        saveSnapshot(mMatResult, mCamchaRootPath, mFileName);
                     }
                 }
         }
-    }
-
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private void showDialogForPermission(String msg) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(DetectionActivity.this);
-        builder.setTitle("알림");
-        builder.setMessage(msg);
-        builder.setCancelable(false);
-        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-            }
-        });
-        builder.create().show();
     }
 
 }
