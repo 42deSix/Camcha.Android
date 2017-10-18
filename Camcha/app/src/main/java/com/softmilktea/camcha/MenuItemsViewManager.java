@@ -67,7 +67,7 @@ public class MenuItemsViewManager {
 
         ImageView menuItemIcon = new ImageView(menuItemIconView.getContext());
         menuItemIcon.setImageResource(menuInfo.getIcon());
-        LinearLayout.LayoutParams iconLayoutParams  = new LinearLayout.LayoutParams((int)(mHeight*BaseApplication.SCALE), (int)(mHeight*BaseApplication.SCALE));
+        LinearLayout.LayoutParams iconLayoutParams  = new LinearLayout.LayoutParams((int)(mHeight*BaseApplication.DP), (int)(mHeight*BaseApplication.DP));
         menuItemIcon.setLayoutParams(iconLayoutParams);
 
         menuItemIcon.setVisibility(View.VISIBLE);
@@ -76,7 +76,7 @@ public class MenuItemsViewManager {
         TextView menuItemText = new TextView(menuItemTextView.getContext());
         menuItemText.setText(menuInfo.getName());
         menuItemText.setTextColor(Color.parseColor("#000000"));
-        menuItemText.setPadding((int)(20*BaseApplication.SCALE), 0, 0, 0);
+        menuItemText.setPadding((int)(20*BaseApplication.DP), 0, 0, 0);
         menuItemText.setVisibility(View.VISIBLE);
         menuItemText.setEnabled(false);
 

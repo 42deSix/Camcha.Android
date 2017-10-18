@@ -21,7 +21,9 @@ import android.support.v7.app.AlertDialog;
 public class BaseApplication extends Application {
     public static boolean DEBUG;
     public static FragmentTransaction ROOT_FRAGMENT_TRANSACTION;
-    public static final float SCALE = Resources.getSystem().getDisplayMetrics().density;
+    public static final float DP = Resources.getSystem().getDisplayMetrics().density;
+    public static final int SCREEN_WIDTH = Resources.getSystem().getDisplayMetrics().widthPixels;
+    public static final int SCREEN_HEIGHT = Resources.getSystem().getDisplayMetrics().heightPixels;
     public static final int NUM_ITEMS = 2;
     public static final int PERMISSIONS_REQUEST_CAMERA = 1;
     public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;

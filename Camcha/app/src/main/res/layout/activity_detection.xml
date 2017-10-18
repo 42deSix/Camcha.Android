@@ -62,8 +62,7 @@
                     android:rotation="270"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/icon_report" />
+                    android:scaleType="fitCenter" />
                 <ImageButton
                     android:id="@+id/detection_take_snapshot_button"
                     android:layout_width="50dp"

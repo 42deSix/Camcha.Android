@@ -63,7 +63,7 @@ public class GpsPlzFragment extends Fragment {
                             ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(GpsPlzFragment.super.getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
                     }
-                    // relocate destination of the back button
+                    // relocate the back button
                     backToMainFragment(transaction);
                 }
             });

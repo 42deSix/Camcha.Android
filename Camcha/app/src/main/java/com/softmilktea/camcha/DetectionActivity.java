@@ -1,7 +1,10 @@
 package com.softmilktea.camcha;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,12 +27,15 @@ import org.opencv.core.Mat;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+
+import layout.MainFragment;
 
 /**
  * Created by SEJIN on 2017-10-03.
@@ -43,6 +49,11 @@ public class DetectionActivity extends AppCompatActivity
     private Mat mMatResult;
     private String mCamchaRootPath;
     private String mFileName;
+
+    private ImageButton mBackButton;
+    private ImageButton mReportButton;
+    private ImageButton mTakeSnapshotButton;
+    private ImageButton mViewSnapshotButton;
 
     private String[] mPermissions = {"android.permission.WRITE_EXTERNAL_STORAGE"};
 
@@ -94,6 +105,14 @@ public class DetectionActivity extends AppCompatActivity
         date.setTimeZone(TimeZone.getTimeZone("GMT+9"));
         mCamchaRootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Camcha";
         mFileName = date.format(currentLocalTime) + ".png";
+
+
+        mBackButton = (ImageButton)findViewById(R.id.detection_back_button);
+        mReportButton = (ImageButton)findViewById(R.id.detection_report_button);
+        mTakeSnapshotButton = (ImageButton)findViewById(R.id.detection_take_snapshot_button);
+        mViewSnapshotButton = (ImageButton)findViewById(R.id.detection_view_snapshot_button);
+
+        changeImageOnImageButton(mCamchaRootPath, mViewSnapshotButton);
     }
 
     @Override
@@ -144,24 +163,19 @@ public class DetectionActivity extends AppCompatActivity
         ConvertRGBtoGray(mMatInput.getNativeObjAddr(), mMatResult.getNativeObjAddr());
 
 
-        ImageButton backButton = (ImageButton)findViewById(R.id.detection_back_button);
-        ImageButton reportButton = (ImageButton)findViewById(R.id.detection_report_button);
-        ImageButton takeSnapshotButton = (ImageButton)findViewById(R.id.detection_take_snapshot_button);
-        ImageButton viewSnapshotButton = (ImageButton)findViewById(R.id.detection_view_snapshot_button);
-
-        backButton.setOnClickListener(new ImageButton.OnClickListener() {
+        mBackButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        reportButton.setOnClickListener(new ImageButton.OnClickListener() {
+        mReportButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
-        takeSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
+        mTakeSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -170,14 +184,15 @@ public class DetectionActivity extends AppCompatActivity
                     }
                     else {
                         saveSnapshot(mMatResult, mCamchaRootPath, mFileName);
+                        changeImageOnImageButton(mCamchaRootPath, mViewSnapshotButton);
                     }
                 }
             }
         });
-        viewSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
+        mViewSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(DetectionActivity.this, SnapshotGalleryActivity.class));
             }
         });
 
@@ -191,7 +206,9 @@ public class DetectionActivity extends AppCompatActivity
     public void saveSnapshot(Mat mat, String rootPath, String fileName) {
         File camchaDir = new File(rootPath);
         if(!camchaDir.exists()) {
-            camchaDir.mkdirs();
+            if (!camchaDir.mkdirs()) {
+                Dlog.e("Failed to create directory");
+            }
         }
 
         Bitmap captureView = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888); // 왜 되는지 모름. rows(), cols() 쓰면 안 됨. 값이 정확히 맞아야 되나...
@@ -212,7 +229,47 @@ public class DetectionActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Get the most recent snapshot in bitmap format
+     * @author Sejin Jeon
+     * @param dir
+     * @return Bitmap
+     */
+    public Bitmap getSnapshotPreview(String dir) {
+        Bitmap resultBitmap;
+        File targetDirectory = new File(dir);
+        if(!targetDirectory.exists()) {
+            resultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_none);
+            if(!targetDirectory.mkdir()) {
+                Dlog.e("Cannot make directory");
+            }
+        }
+        else {
+            File[] pngFiles = targetDirectory.listFiles(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".png");
+                }
+            });
+            int numFiles = pngFiles.length;
+            if(numFiles > 0) {
+                resultBitmap = BitmapFactory.decodeFile(pngFiles[numFiles - 1].getPath());
+            }
+            else {
+                resultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_none);
+            }
+        }
+        return resultBitmap;
+    }
 
+    /**
+     * Literally change image on an image button
+     * @author Sejin Jeon
+     */
+    public void changeImageOnImageButton(String path, ImageButton imageButton) {
+        Bitmap snapshotPreview = getSnapshotPreview(path);
+        BitmapDrawable snapshotPreviewBitmapDrawable = new BitmapDrawable(getResources(), snapshotPreview);
+        imageButton.setBackground(snapshotPreviewBitmapDrawable);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -220,7 +277,6 @@ public class DetectionActivity extends AppCompatActivity
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         switch (requestCode) {
-
             case BaseApplication.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:
                 if (grantResults.length > 0) {
                     boolean writeExternalStoragePermissionAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;

@@ -12,6 +12,11 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
+//        System.out.println(((float)BaseApplication.SCREEN_WIDTH / (float)BaseApplication.SCREEN_HEIGHT));
+        double height = 2560.0;
+        double width = 1532.0;
         assertEquals(4, 2 + 2);
+//        Dlog.d(((float)BaseApplication.SCREEN_WIDTH / (float)BaseApplication.SCREEN_HEIGHT)+"");
+        assertNotEquals(0.0, ((float)width / (float)height));
     }
 }
