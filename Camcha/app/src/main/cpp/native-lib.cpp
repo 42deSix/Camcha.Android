@@ -26,7 +26,7 @@ extern "C" {
 //        GaussianBlur(matInput, matResult, Size(7,7), 1.5, 1.5);
         
         minMaxLoc(matInput, &minVal,&maxVal,&minLoc,&maxLoc);
-        circle(matResult, maxLoc, 50, 1000, 5);
+        circle(matResult, maxLoc, 50, Scalar(64, 255, 0), 5);
 
     }
 }
