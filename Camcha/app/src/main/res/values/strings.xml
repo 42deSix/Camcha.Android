@@ -15,4 +15,17 @@
     </string>
     <string name="agree">좋아요</string>
     <string name="disagree">좆까요</string>
+
+    <!-- Report -->
+    <string name="report_by_call">전화</string>
+    <string name="report_by_message">문자메시지</string>
+    <string name="description_camcha">
+        "Camcha 앱의 자체 포맷을 통해 탐지스냅샷이나 정확한 위치정보 등을 포함하여 손쉽게 신고합니다."
+    </string>
+    <string name="description_call">
+        "직접 관할부처로 전화를 걸어 상황을 설명합니다."
+    </string>
+    <string name="description_message">
+        "직접 관할부처에 문자메시지를 작성하여 전송합니다."
+    </string>
 </resources>
