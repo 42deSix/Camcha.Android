@@ -5,7 +5,7 @@
     <string name="detection_start">탐지</string>
     <string name="show_map">지도</string>
 
-    <!-- Detection -->
+    <!-- DetectionResult -->
     <string name="gps_plz">
         보다 안전한 사회를 만들기 위해 Camcha는 사용자 위치정보를 포함한 탐지기록을 수집하고자 합니다.\n
         탐지 전에 GPS 정보 수집에 동의해주세요."

@@ -28,6 +28,10 @@ public class BaseApplication extends Application {
     public static final int PERMISSIONS_REQUEST_CAMERA = 1;
     public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
 
+    /* server connection */
+    public static final String SERVER_ADDRESS = "http://52.79.151.80:80/detections/";
+
+
 
     @Override
     public void onCreate() {

@@ -16,6 +16,8 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
@@ -34,8 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-
-import layout.MainFragment;
 
 /**
  * Created by SEJIN on 2017-10-03.
@@ -93,12 +93,14 @@ public class DetectionActivity extends AppCompatActivity
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_detection);
 
+        /* get camera view */
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
         mOpenCvCameraView.setCameraIndex(0); // front-camera(1),  back-camera(0)
         mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
 
+        /* storage access */
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         Date currentLocalTime = cal.getTime();
         DateFormat date = new SimpleDateFormat("yyMMddHHmmssS");
@@ -106,13 +108,20 @@ public class DetectionActivity extends AppCompatActivity
         mCamchaRootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Camcha";
         mFileName = date.format(currentLocalTime) + ".png";
 
-
+        /* buttons */
         mBackButton = (ImageButton)findViewById(R.id.detection_back_button);
         mReportButton = (ImageButton)findViewById(R.id.detection_report_button);
         mTakeSnapshotButton = (ImageButton)findViewById(R.id.detection_take_snapshot_button);
         mViewSnapshotButton = (ImageButton)findViewById(R.id.detection_view_snapshot_button);
-
         changeImageOnImageButton(mCamchaRootPath, mViewSnapshotButton);
+
+        /* server connection */
+        Gson gson = new Gson();
+        DetectionResult detectionResult = new DetectionResult("test", "1.0", "2.0", "dont_report");
+        String jsonString = gson.toJson(detectionResult);
+        Dlog.e(jsonString);
+        new ConnectToServerAsync(jsonString).execute();
+
     }
 
     @Override
@@ -290,5 +299,4 @@ public class DetectionActivity extends AppCompatActivity
                 }
         }
     }
-
 }
