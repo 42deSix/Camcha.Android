@@ -4,13 +4,22 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="20dp"
-    android:id="@+id/menu_layout">
+    android:id="@+id/root_view_report">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="22dp"
+        android:text="@string/report_how"
+        android:layout_marginBottom="20dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:id="@+id/report_by_camcha">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -37,6 +46,7 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:gravity="center_vertical"
+            android:paddingBottom="20dp"
             android:text="@string/description_camcha" />
     </LinearLayout>
 
@@ -44,7 +54,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:id="@+id/report_by_call">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,13 +78,15 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:gravity="center_vertical"
+            android:paddingBottom="20dp"
             android:text="@string/description_call"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:id="@+id/report_by_message">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -96,6 +109,7 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:gravity="center_vertical"
+            android:paddingBottom="20dp"
             android:text="@string/description_message"/>
     </LinearLayout>
 </LinearLayout>

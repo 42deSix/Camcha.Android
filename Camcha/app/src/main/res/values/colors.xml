@@ -3,6 +3,7 @@
     <!-- pink tone : lovely -->
     <color name="colorPrimary">#ffcccc</color>
     <color name="colorPrimaryDark">#eeaaaa</color>
+    <color name="colorPrimaryBright">#fee</color>
     <color name="colorAccent">#FF4081</color>
 
     <!-- yellow tone : fresh -->
