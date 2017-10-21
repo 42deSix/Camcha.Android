@@ -7,7 +7,10 @@ import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -25,10 +28,12 @@ public class BaseApplication extends Application {
     public static final int SCREEN_WIDTH = Resources.getSystem().getDisplayMetrics().widthPixels;
     public static final int SCREEN_HEIGHT = Resources.getSystem().getDisplayMetrics().heightPixels;
     public static final int NUM_ITEMS = 2;
+
+    /* permission */
     public static final int PERMISSIONS_REQUEST_CAMERA = 1;
     public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
 
-    /* server connection */
+    /* safety map */
     public static final String SERVER_ADDRESS = "http://52.79.151.80:80/detections/";
 
 
@@ -37,6 +42,7 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         this.DEBUG = isDebuggable(this);
+
     }
 
     /**

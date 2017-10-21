@@ -34,15 +34,17 @@ public class ConnectToServerAsync extends AsyncTask<Void,Void,Void> {
             outputBytes = query.getBytes("UTF-8");
 
             urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("Accept","application/json");
             urlConnection.connect();
-//            OutputStream os = urlConnection.getOutputStream();
-//            os.write(outputBytes);
-//            os.close();
-            try (PrintWriter p = new PrintWriter(urlConnection.getOutputStream())) {
-                p.println(query);
-            } catch (FileNotFoundException e) {
-                Dlog.e(e.getMessage());
-            }
+            OutputStream os = urlConnection.getOutputStream();
+            os.write(outputBytes);
+            os.close();
+//            try (PrintWriter p = new PrintWriter(urlConnection.getOutputStream())) {
+//                p.println(query);
+//            } catch (FileNotFoundException e) {
+//                Dlog.e(e.getMessage());
+//            }
 
 
                 /* Get Response and execute WebService request*/

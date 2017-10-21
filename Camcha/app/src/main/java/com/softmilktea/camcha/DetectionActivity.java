@@ -1,14 +1,20 @@
 package com.softmilktea.camcha;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.SurfaceView;
 import android.view.View;
@@ -35,6 +41,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -49,13 +56,22 @@ public class DetectionActivity extends AppCompatActivity
     private Mat mMatResult;
     private String mCamchaRootPath;
     private String mFileName;
+    private String[] mPermissions = {"android.permission.WRITE_EXTERNAL_STORAGE"};
 
     private ImageButton mBackButton;
     private ImageButton mReportButton;
     private ImageButton mTakeSnapshotButton;
     private ImageButton mViewSnapshotButton;
 
-    private String[] mPermissions = {"android.permission.WRITE_EXTERNAL_STORAGE"};
+    private DetectionResult mDetectionResult;
+    private LocationListener mLocationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+//            mDetectionResult = new DetectionResult("test", Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));    // "Samsung phones have this problem." - https://stackoverflow.com/questions/14700755/locationmanager-requestlocationupdates-not-working
+        }
+        public void onProviderDisabled(String provider) {}
+        public void onProviderEnabled(String provider) {}
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+    };
 
     public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
 
@@ -116,16 +132,32 @@ public class DetectionActivity extends AppCompatActivity
         changeImageOnImageButton(mCamchaRootPath, mViewSnapshotButton);
 
         /* server connection */
-        Gson gson = new Gson();
-        DetectionResult detectionResult = new DetectionResult("test", "1.0", "2.0", "dont_report");
-        String jsonString = gson.toJson(detectionResult);
-        Dlog.e(jsonString);
-        new ConnectToServerAsync(jsonString).execute();
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if ( ContextCompat.checkSelfPermission(DetectionActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if(locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER) || locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
+                List<String> providers = locationManager.getProviders(true);
+                for(String provider : providers) {
+                    locationManager.requestLocationUpdates(provider, 0, 0, mLocationListener);
+                    if(provider != null) {
+                        Location location = locationManager.getLastKnownLocation(provider);
+                        if(location != null) {
+                            mDetectionResult = new DetectionResult("test", Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));
+                        }
+                    }
+                }
 
+                Gson gson = new Gson();
+                String jsonString = gson.toJson(mDetectionResult);
+                new ConnectToServerAsync(jsonString).execute();
+
+                locationManager.removeUpdates(mLocationListener);
+            }
+        }
     }
 
     @Override
-    public void onPause() {
+    public void onPause(    ) {
         super.onPause();
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
