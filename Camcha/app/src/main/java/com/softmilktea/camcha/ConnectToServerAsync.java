@@ -24,15 +24,13 @@ public class ConnectToServerAsync extends AsyncTask<Void,Void,Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-
         try {
-                /* forming th java.net.URL object */
+            /* forming th java.net.URL object */
             URL url = new URL(BaseApplication.SERVER_ADDRESS);
             urlConnection = (HttpURLConnection) url.openConnection();
 
-                /* pass post data */
+            /* pass post data */
             outputBytes = query.getBytes("UTF-8");
-
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestProperty("Accept","application/json");
@@ -40,18 +38,12 @@ public class ConnectToServerAsync extends AsyncTask<Void,Void,Void> {
             OutputStream os = urlConnection.getOutputStream();
             os.write(outputBytes);
             os.close();
-//            try (PrintWriter p = new PrintWriter(urlConnection.getOutputStream())) {
-//                p.println(query);
-//            } catch (FileNotFoundException e) {
-//                Dlog.e(e.getMessage());
-//            }
 
-
-                /* Get Response and execute WebService request*/
+            /* Get Response and execute WebService request*/
             int statusCode = urlConnection.getResponseCode();
             Dlog.e(statusCode+"");
 
-                /* 200 represents HTTP OK */
+            /* 200 represents HTTP OK */
             if (statusCode == HttpsURLConnection.HTTP_OK) {
                 inputStream = new BufferedInputStream(urlConnection.getInputStream());
 //                    responseData= convertStreamToString(inputStream);

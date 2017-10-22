@@ -131,29 +131,6 @@ public class DetectionActivity extends AppCompatActivity
         mViewSnapshotButton = (ImageButton)findViewById(R.id.detection_view_snapshot_button);
         changeImageOnImageButton(mCamchaRootPath, mViewSnapshotButton);
 
-        /* server connection */
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if ( ContextCompat.checkSelfPermission(DetectionActivity.this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if(locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER) || locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
-                List<String> providers = locationManager.getProviders(true);
-                for(String provider : providers) {
-                    locationManager.requestLocationUpdates(provider, 0, 0, mLocationListener);
-                    if(provider != null) {
-                        Location location = locationManager.getLastKnownLocation(provider);
-                        if(location != null) {
-                            mDetectionResult = new DetectionResult("test", Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));
-                        }
-                    }
-                }
-
-                Gson gson = new Gson();
-                String jsonString = gson.toJson(mDetectionResult);
-                new ConnectToServerAsync(jsonString).execute();
-
-                locationManager.removeUpdates(mLocationListener);
-            }
-        }
     }
 
     @Override
@@ -190,7 +167,7 @@ public class DetectionActivity extends AppCompatActivity
 
     @Override
     public void onCameraViewStopped() {
-
+        sendDetectionInfoToServer();
     }
 
     @Override
@@ -310,6 +287,34 @@ public class DetectionActivity extends AppCompatActivity
         Bitmap snapshotPreview = getSnapshotPreview(path);
         BitmapDrawable snapshotPreviewBitmapDrawable = new BitmapDrawable(getResources(), snapshotPreview);
         imageButton.setBackground(snapshotPreviewBitmapDrawable);
+    }
+
+    /**
+     * Send information about detection like latitute/longitute and scanning time and et cetra.
+     * @author Sejin Jeon
+     */
+    public void sendDetectionInfoToServer() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if ( ContextCompat.checkSelfPermission(DetectionActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if(locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER) || locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
+                List<String> providers = locationManager.getProviders(true);
+                for(String provider : providers) {
+                    locationManager.requestLocationUpdates(provider, 0, 0, mLocationListener);
+                    if(provider != null) {
+                        Location location = locationManager.getLastKnownLocation(provider);
+                        if(location != null) {
+                            mDetectionResult = new DetectionResult("test", Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));
+                        }
+                    }
+                }
+                Gson gson = new Gson();
+                String jsonString = gson.toJson(mDetectionResult);
+                new ConnectToServerAsync(jsonString).execute();
+
+                locationManager.removeUpdates(mLocationListener);
+            }
+        }
     }
 
     @Override
