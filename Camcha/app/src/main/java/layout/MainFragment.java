@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.softmilktea.camcha.BaseApplication;
+import com.softmilktea.camcha.ConnectToServerAsync;
+import com.softmilktea.camcha.Dlog;
 import com.softmilktea.camcha.R;
 
 /**
@@ -50,6 +52,7 @@ public class MainFragment extends Fragment {
         showMapButton.setOnClickListener(
                 new AppCompatButton.OnClickListener() {
                     public void onClick(View v) {
+                        new ConnectToServerAsync(BaseApplication.QUERY_LIST[1], "").execute();
 //                        Log.e(TAG, "Show me the map");
 ////                        startActivity(new Intent(MainFragment.super.getContext(), ShowMapActivity.class));
 //                        if(transaction != null) {

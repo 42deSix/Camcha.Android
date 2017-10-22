@@ -310,7 +310,7 @@ public class DetectionActivity extends AppCompatActivity
                 }
                 Gson gson = new Gson();
                 String jsonString = gson.toJson(mDetectionResult);
-                new ConnectToServerAsync(jsonString).execute();
+                new ConnectToServerAsync(BaseApplication.QUERY_LIST[0], jsonString).execute();
 
                 locationManager.removeUpdates(mLocationListener);
             }
