@@ -2,7 +2,6 @@ package layout;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.softmilktea.camcha.BaseApplication;
-import com.softmilktea.camcha.Dlog;
 import com.softmilktea.camcha.R;
 
 /**
@@ -31,26 +29,32 @@ public class ReportFragment extends Fragment {
         reportByCamcha.setOnClickListener(new LinearLayout.OnClickListener() {
             @Override
             public void onClick(View v) {
-                replaceFragment(new DecideWhereToReportFragment(), 1);
+                replaceRootView(new DecideWhereToReportFragment(), 1);
             }
         });
         reportByCall.setOnClickListener(new LinearLayout.OnClickListener() {
             @Override
             public void onClick(View v) {
-                replaceFragment(new DecideWhereToReportFragment(), 2);
+                replaceRootView(new DecideWhereToReportFragment(), 2);
             }
         });
         reportByMessage.setOnClickListener(new LinearLayout.OnClickListener() {
             @Override
             public void onClick(View v) {
-                replaceFragment(new DecideWhereToReportFragment(), 3);
+                replaceRootView(new DecideWhereToReportFragment(), 3);
             }
         });
 
         return view;
     }
 
-    public void replaceFragment(Fragment newFragment, int _switch) {
+    /**
+     * Replaces 'root_view' of main page in RootFragment with other views
+     * And hands over switch variable.
+     * @author Sejin Jeon
+     * @param newFragment
+     */
+    public void replaceRootView(Fragment newFragment, int _switch) {
         Bundle bundle = new Bundle();
         bundle.putInt("switch", _switch);
         newFragment.setArguments(bundle);

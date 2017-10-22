@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import layout.MainFragment;
+import layout.ReportFragment;
 
 /**
  * Created by SEJIN on 2017-10-03.
@@ -172,7 +173,8 @@ public class DetectionActivity extends AppCompatActivity
         mReportButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                BaseApplication.GO_TO_REPORT_FRAGMENT = true;   // 이런 식으로 짜도 되나...
+                finish();
             }
         });
         mTakeSnapshotButton.setOnClickListener(new ImageButton.OnClickListener() {

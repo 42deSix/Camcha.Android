@@ -24,11 +24,20 @@ public class RootFragment extends Fragment{
 		/* Inflate the layout for this fragment */
         View view = inflater.inflate(R.layout.fragment_root, container, false);
 
-        BaseApplication.ROOT_FRAGMENT_TRANSACTION = getFragmentManager().beginTransaction();
-        BaseApplication.ROOT_FRAGMENT_TRANSACTION.add(R.id.root_view, new MainFragment());
-        BaseApplication.ROOT_FRAGMENT_TRANSACTION.commit();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.add(R.id.root_view, new MainFragment());
+        transaction.commit();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(BaseApplication.GO_TO_REPORT_FRAGMENT) {
+            replaceRootView(new ReportFragment());
+            BaseApplication.GO_TO_REPORT_FRAGMENT = false;
+        }
     }
 
     /**
@@ -38,13 +47,13 @@ public class RootFragment extends Fragment{
      */
     public void replaceRootView(Fragment newFragment) {
         FragmentManager fm = getFragmentManager();
-        BaseApplication.ROOT_FRAGMENT_TRANSACTION = fm.beginTransaction();
-        BaseApplication.ROOT_FRAGMENT_TRANSACTION.replace(R.id.root_view, newFragment);
-        BaseApplication.ROOT_FRAGMENT_TRANSACTION.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        BaseApplication.ROOT_FRAGMENT_TRANSACTION.addToBackStack(null);
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.replace(R.id.root_view, newFragment);
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.addToBackStack(null);
         if(fm.getBackStackEntryCount() > 0) {
             fm.popBackStack();
         }
-        BaseApplication.ROOT_FRAGMENT_TRANSACTION.commit();
+        transaction.commit();
     }
 }
