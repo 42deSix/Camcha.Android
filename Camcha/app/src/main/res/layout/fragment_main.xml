@@ -4,36 +4,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="30dp"
-        android:orientation="vertical"
-        android:gravity="bottom">
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/detection_button"
+        android:layout_height="match_parent">
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:src="@drawable/find_pen_cam"-->
+            <!--android:scaleType="centerCrop"/>-->
+        <LinearLayout
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/button_circular"
-            android:text="@string/detection_start" />
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/show_map_button"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/button_circular"
-            android:text="@string/show_map" />
-    </LinearLayout>
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="30dp"
+            android:orientation="vertical"
+            android:gravity="center|bottom">
+            <!--android:background="#8fff">-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="140dp"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="60dp"
+                    android:textAlignment="center"
+                    android:fontFamily="cursive"
+                    android:textColor="#000"
+                    android:text="Camcha"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:fontFamily="serif-monospace"
+                    android:text="We make better place to live"/>
+            </LinearLayout>
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/detection_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button_circular"
+                android:text="@string/detection_start" />
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/show_map_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button_circular"
+                android:text="@string/show_map" />
+        </LinearLayout>
+    </FrameLayout>
 </LinearLayout>
 <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
     <!--xmlns:tools="http://schemas.android.com/tools"-->
