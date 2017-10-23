@@ -1,5 +1,7 @@
 package com.softmilktea.camcha;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.google.gson.Gson;
@@ -17,18 +19,30 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import layout.MainFragment;
+
 public class ConnectToServerAsync extends AsyncTask<Void,Void,Void> {
     private String mJsonString;
     private String mQuery;
     private final Map<String, String> QUERY_MAP;
+    private ProgressDialog mProgressDialog;
 
-    public ConnectToServerAsync(String query, String jsonString) {
+    public ConnectToServerAsync(String query, String jsonString, Context context) {
         this.mQuery = query;
         this.mJsonString = jsonString;
+        this.mProgressDialog = new ProgressDialog(context);
 
         QUERY_MAP = new HashMap<>();
         QUERY_MAP.put("SEND_DETECTION_RESULT", "/detections/");
         QUERY_MAP.put("RECEIVE_DETECTION_DATA", "/detections/?format=json");
+    }
+
+    @Override
+    protected void onPreExecute() {
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setMessage("서버로부터 데이터를 받아오고 있습니다.");
+        mProgressDialog.show();
+        super.onPreExecute();
     }
 
     @Override
@@ -63,8 +77,7 @@ public class ConnectToServerAsync extends AsyncTask<Void,Void,Void> {
                 InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
                 String responseData = convertStreamToString(inputStream);
                 Gson gson = new Gson();
-                BaseApplication.RESPONSE_DATA = gson.toJson(responseData);
-                Dlog.e(BaseApplication.RESPONSE_DATA);
+                BaseApplication.RESPONSE_DATA.put(mQuery, gson.toJson(responseData));
             }
         }
         catch (Exception e) {
@@ -72,6 +85,12 @@ public class ConnectToServerAsync extends AsyncTask<Void,Void,Void> {
         }
 
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        mProgressDialog.dismiss();
+        super.onPostExecute(aVoid);
     }
 
     /**

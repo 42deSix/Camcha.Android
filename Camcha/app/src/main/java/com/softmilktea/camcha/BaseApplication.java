@@ -17,6 +17,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by SEJIN on 2017-10-16.
  */
@@ -32,6 +35,7 @@ public class BaseApplication extends Application {
     /* permission */
     public static final int PERMISSIONS_REQUEST_CAMERA = 1;
     public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
+    public static final int PERMISSIONS_REQUEST_FINE_LOCATION = 3;
 
     /* safety map */
     public static final String SERVER_ADDRESS = "http://52.79.151.80";
@@ -39,15 +43,12 @@ public class BaseApplication extends Application {
             "SEND_DETECTION_RESULT",
             "RECEIVE_DETECTION_DATA"
     };
-    public static String RESPONSE_DATA;
-
-
+    public static Map<String, String> RESPONSE_DATA = new HashMap<>();
 
     @Override
     public void onCreate() {
         super.onCreate();
         this.DEBUG = isDebuggable(this);
-
     }
 
     /**

@@ -52,15 +52,19 @@ public class MainFragment extends Fragment {
         showMapButton.setOnClickListener(
                 new AppCompatButton.OnClickListener() {
                     public void onClick(View v) {
-                        new ConnectToServerAsync(BaseApplication.QUERY_LIST[1], "").execute();
-//                        Log.e(TAG, "Show me the map");
-////                        startActivity(new Intent(MainFragment.super.getContext(), ShowMapActivity.class));
-//                        if(transaction != null) {
-//                            transaction.replace(R.id.root_view, new ShowMapFragment());
-//                            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-//                            transaction.addToBackStack(null);
-//                            transaction.commit();
-//                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (!BaseApplication.hasPermissions(getActivity(), mPermissions)) {
+                                requestPermissions(mPermissions, BaseApplication.PERMISSIONS_REQUEST_FINE_LOCATION);
+                            }
+
+                            new ConnectToServerAsync(BaseApplication.QUERY_LIST[1], "", getContext()).execute();
+
+                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                            transaction.replace(R.id.root_view, new ShowMapFragment());
+                            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+                        }
                     }
                 }
         );
