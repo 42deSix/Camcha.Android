@@ -1,20 +1,28 @@
 package com.softmilktea.camcha;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -33,10 +41,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
-
-import layout.MainFragment;
-import layout.ReportFragment;
 
 /**
  * Created by SEJIN on 2017-10-03.
@@ -50,13 +56,22 @@ public class DetectionActivity extends AppCompatActivity
     private Mat mMatResult;
     private String mCamchaRootPath;
     private String mFileName;
+    private String[] mPermissions = {"android.permission.WRITE_EXTERNAL_STORAGE"};
 
     private ImageButton mBackButton;
     private ImageButton mReportButton;
     private ImageButton mTakeSnapshotButton;
     private ImageButton mViewSnapshotButton;
 
-    private String[] mPermissions = {"android.permission.WRITE_EXTERNAL_STORAGE"};
+    private DetectionResult mDetectionResult;
+    private LocationListener mLocationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+//            mDetectionResult = new DetectionResult("test", Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));    // "Samsung phones have this problem." - https://stackoverflow.com/questions/14700755/locationmanager-requestlocationupdates-not-working
+        }
+        public void onProviderDisabled(String provider) {}
+        public void onProviderEnabled(String provider) {}
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+    };
 
     public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
 
@@ -94,12 +109,14 @@ public class DetectionActivity extends AppCompatActivity
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_detection);
 
+        /* get camera view */
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
         mOpenCvCameraView.setCameraIndex(0); // front-camera(1),  back-camera(0)
         mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
 
+        /* storage access */
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         Date currentLocalTime = cal.getTime();
         DateFormat date = new SimpleDateFormat("yyMMddHHmmssS");
@@ -107,17 +124,17 @@ public class DetectionActivity extends AppCompatActivity
         mCamchaRootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Camcha";
         mFileName = date.format(currentLocalTime) + ".png";
 
-
+        /* buttons */
         mBackButton = (ImageButton)findViewById(R.id.detection_back_button);
         mReportButton = (ImageButton)findViewById(R.id.detection_report_button);
         mTakeSnapshotButton = (ImageButton)findViewById(R.id.detection_take_snapshot_button);
         mViewSnapshotButton = (ImageButton)findViewById(R.id.detection_view_snapshot_button);
-
         changeImageOnImageButton(mCamchaRootPath, mViewSnapshotButton);
+
     }
 
     @Override
-    public void onPause() {
+    public void onPause(    ) {
         super.onPause();
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
@@ -150,7 +167,7 @@ public class DetectionActivity extends AppCompatActivity
 
     @Override
     public void onCameraViewStopped() {
-
+        sendDetectionInfoToServer();
     }
 
     @Override
@@ -273,6 +290,34 @@ public class DetectionActivity extends AppCompatActivity
         imageButton.setBackground(snapshotPreviewBitmapDrawable);
     }
 
+    /**
+     * Send information about detection like latitute/longitute and scanning time and et cetra.
+     * @author Sejin Jeon
+     */
+    public void sendDetectionInfoToServer() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if ( ContextCompat.checkSelfPermission(DetectionActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if(locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER) || locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
+                List<String> providers = locationManager.getProviders(true);
+                for(String provider : providers) {
+                    locationManager.requestLocationUpdates(provider, 0, 0, mLocationListener);
+                    if(provider != null) {
+                        Location location = locationManager.getLastKnownLocation(provider);
+                        if(location != null) {
+                            mDetectionResult = new DetectionResult("test", Double.toString(location.getLatitude()), Double.toString(location.getLongitude()));
+                        }
+                    }
+                }
+                Gson gson = new Gson();
+                String jsonString = gson.toJson(mDetectionResult);
+//                new Backupppp(BaseApplication.QUERY_LIST[0], jsonString, DetectionActivity.this).execute();
+                new SendToServerAsync(BaseApplication.QUERY_LIST[0]).execute(jsonString);
+                locationManager.removeUpdates(mLocationListener);
+            }
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -292,5 +337,4 @@ public class DetectionActivity extends AppCompatActivity
                 }
         }
     }
-
 }

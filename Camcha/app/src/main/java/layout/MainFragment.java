@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.softmilktea.camcha.BaseApplication;
+import com.softmilktea.camcha.ReceiveFromServerAsync;
 import com.softmilktea.camcha.R;
 
 /**
@@ -50,14 +51,16 @@ public class MainFragment extends Fragment {
         showMapButton.setOnClickListener(
                 new AppCompatButton.OnClickListener() {
                     public void onClick(View v) {
-//                        Log.e(TAG, "Show me the map");
-////                        startActivity(new Intent(MainFragment.super.getContext(), ShowMapActivity.class));
-//                        if(transaction != null) {
-//                            transaction.replace(R.id.root_view, new ShowMapFragment());
-//                            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-//                            transaction.addToBackStack(null);
-//                            transaction.commit();
-//                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (!BaseApplication.hasPermissions(getActivity(), mPermissions)) {
+                                requestPermissions(mPermissions, BaseApplication.PERMISSIONS_REQUEST_FINE_LOCATION);
+                            }
+                        }
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.root_view, new ShowMapFragment());
+                        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
                     }
                 }
         );
