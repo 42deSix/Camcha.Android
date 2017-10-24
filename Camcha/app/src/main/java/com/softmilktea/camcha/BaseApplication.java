@@ -38,12 +38,13 @@ public class BaseApplication extends Application {
     public static final int PERMISSIONS_REQUEST_FINE_LOCATION = 3;
 
     /* safety map */
+    public static final String CLIENT_ID = "BR56NxCjsDHKMVGf0WyJ"; // Naver API application client id
     public static final String SERVER_ADDRESS = "http://52.79.151.80";
     public static final String[] QUERY_LIST = {
             "SEND_DETECTION_RESULT",
             "RECEIVE_DETECTION_DATA"
     };
-    public static Map<String, String> RESPONSE_DATA = new HashMap<>();
+//    public static Map<String, String> RESPONSE_DATA = new HashMap<>();
 
     @Override
     public void onCreate() {

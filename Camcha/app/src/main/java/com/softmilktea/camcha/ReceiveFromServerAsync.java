@@ -19,26 +19,23 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import layout.MainFragment;
-
-public class ConnectToServerAsync extends AsyncTask<Void,Void,Void> {
-    private String mJsonString;
+public class ReceiveFromServerAsync extends AsyncTask<Void, Void, String> {
     private String mQuery;
+    private Context mContext;
     private final Map<String, String> QUERY_MAP;
     private ProgressDialog mProgressDialog;
 
-    public ConnectToServerAsync(String query, String jsonString, Context context) {
+    public ReceiveFromServerAsync(String query, Context context) {
         this.mQuery = query;
-        this.mJsonString = jsonString;
-        this.mProgressDialog = new ProgressDialog(context);
+        this.mContext = context;
 
         QUERY_MAP = new HashMap<>();
-        QUERY_MAP.put("SEND_DETECTION_RESULT", "/detections/");
         QUERY_MAP.put("RECEIVE_DETECTION_DATA", "/detections/?format=json");
     }
 
     @Override
     protected void onPreExecute() {
+        mProgressDialog = new ProgressDialog(mContext);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressDialog.setMessage("서버로부터 데이터를 받아오고 있습니다.");
         mProgressDialog.show();
@@ -46,51 +43,35 @@ public class ConnectToServerAsync extends AsyncTask<Void,Void,Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
-
+    protected String doInBackground(Void... params) {
+        String responseData = "";
         try {
-            /* forming th java.net.URL object */
             URL url = new URL(BaseApplication.SERVER_ADDRESS + QUERY_MAP.get(mQuery));
             Dlog.e(BaseApplication.SERVER_ADDRESS + QUERY_MAP.get(mQuery));
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
-            /* pass post data */
-            byte[] OutputBytes = mJsonString.getBytes("UTF-8");
-            if(mQuery == BaseApplication.QUERY_LIST[0]) {
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setRequestProperty("Content-Type", "application/json");
-                urlConnection.setRequestProperty("Accept", "application/json");
-            }
-            else if(mQuery == BaseApplication.QUERY_LIST[1]) {
-                urlConnection.setRequestMethod("GET");
-            }
+            urlConnection.setRequestMethod("GET");
             urlConnection.connect();
-            int statusCode = urlConnection.getResponseCode();
 
-            if (statusCode == HttpsURLConnection.HTTP_CREATED) {
-                OutputStream os = urlConnection.getOutputStream();
-                os.write(OutputBytes);
-                os.close();
-            }
+            int statusCode = urlConnection.getResponseCode();
 
             if (statusCode == HttpsURLConnection.HTTP_OK) {
                 InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
-                String responseData = convertStreamToString(inputStream);
                 Gson gson = new Gson();
-                BaseApplication.RESPONSE_DATA.put(mQuery, gson.toJson(responseData));
+                responseData = convertStreamToString(inputStream);
             }
         }
         catch (Exception e) {
             Dlog.e(e.getMessage());
         }
 
-        return null;
+        return responseData;
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
+    protected void onPostExecute(String responseData) {
         mProgressDialog.dismiss();
-        super.onPostExecute(aVoid);
+        super.onPostExecute(responseData);
     }
 
     /**

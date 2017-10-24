@@ -15,4 +15,16 @@ public class DetectionResult {
         this.lat = lat;
         this.lng = lng;
     }
+
+    public String getDevice_id() {
+        return device_id;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
 }
