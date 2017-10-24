@@ -133,7 +133,10 @@ public class ShowMapFragment extends Fragment {
     /**
      * Get all coords in json format from DB and mark them on the Naver map.
      * @author Sejin Jeon
+<<<<<<< HEAD
      * @return List<CamchaGeoPoint>
+=======
+>>>>>>> be5acb31e914a76ede4172517f95a6403ca0965c
      */
     public List<CamchaGeoPoint> receiveCoords() {
         String coordJsonStringChunk = null;
