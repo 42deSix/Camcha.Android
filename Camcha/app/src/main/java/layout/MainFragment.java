@@ -12,8 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.softmilktea.camcha.BaseApplication;
-import com.softmilktea.camcha.ConnectToServerAsync;
-import com.softmilktea.camcha.Dlog;
+import com.softmilktea.camcha.ReceiveFromServerAsync;
 import com.softmilktea.camcha.R;
 
 /**
@@ -56,15 +55,12 @@ public class MainFragment extends Fragment {
                             if (!BaseApplication.hasPermissions(getActivity(), mPermissions)) {
                                 requestPermissions(mPermissions, BaseApplication.PERMISSIONS_REQUEST_FINE_LOCATION);
                             }
-
-                            new ConnectToServerAsync(BaseApplication.QUERY_LIST[1], "", getContext()).execute();
-
-                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                            transaction.replace(R.id.root_view, new ShowMapFragment());
-                            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                            transaction.addToBackStack(null);
-                            transaction.commit();
                         }
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.root_view, new ShowMapFragment());
+                        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
                     }
                 }
         );
